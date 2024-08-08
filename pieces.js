@@ -1,8 +1,24 @@
-// Récupération des pièces depuis le fichier JSON
-const reponse = await fetch('pieces-autos.json');
-const pieces = await reponse.json();
+// on import la fonction
+import { ajoutListenersAvis, ajoutListenerEnvoyerAvis, afficherAvis } from "./avis.js";
 
-// On crée une fonction qui va généerer la liste des pièces
+//Récupération des pièces eventuellement stockées dans le localStorage
+let pieces = window.localStorage.getItem('pieces');
+if (pieces === null){
+   // Récupération des pièces depuis l'API
+   const reponse = await fetch('http://localhost:8081/pieces/');
+   pieces = await reponse.json();
+   // Transformation des pièces en JSON
+   const valeurPieces = JSON.stringify(pieces);
+   // Stockage des informations dans le localStorage
+   window.localStorage.setItem("pieces", valeurPieces);
+}else{
+   pieces = JSON.parse(pieces);
+}
+
+// on appelle la fonction pour ajouter le listener au formulaire
+ajoutListenerEnvoyerAvis()
+
+// On crée une fonction qui va générer la liste des pièces
 function genererPieces(pieces) {
 for (let i = 0; i < pieces.length; i++) {
 
@@ -33,7 +49,10 @@ for (let i = 0; i < pieces.length; i++) {
 
     const disponibiliteElement = document.createElement("p");
         disponibiliteElement.innerText = article.disponibilite ? "En stock" : "Rupture de stock";
-    
+    //Code pour les bouton d'avis
+    const avisBouton = document.createElement("button");
+    avisBouton.dataset.id = article.id;
+    avisBouton.textContent = "Afficher les avis";
     // On rattache la balise article à la section Fiches
     sectionFiches.appendChild(pieceElement);
 
@@ -46,10 +65,25 @@ for (let i = 0; i < pieces.length; i++) {
     pieceElement.appendChild(categorieElement);
     pieceElement.appendChild(descriptionElement);
     pieceElement.appendChild(disponibiliteElement);
+    //on rattache aussi les bouton
+    pieceElement.appendChild(avisBouton);
     }
+    // Ajout de la fonction ajoutListenersAvis
+        ajoutListenersAvis();
 }
 
 genererPieces(pieces);
+
+for(let i = 0; i < pieces.length; i++){
+    const id = pieces[i].id;
+    const avisJSON = window.localStorage.getItem(`avis-piece-${id}`);
+    const avis = JSON.parse(avisJSON);
+
+    if(avis !== null){
+        const pieceElement = document.querySelector(`article[data-id="${id}"]`);
+        afficherAvis(pieceElement, avis)
+    }
+}
 
 //gestion des boutons 
 const boutonTrier = document.querySelector(".btn-trier");
@@ -153,4 +187,10 @@ document.querySelector(".disponible").appendChild(pElementDisponible)
             });
             document.querySelector(".fiches").innerHTML = "";
             genererPieces(piecesFiltrees);
-        })
+    });
+
+// Ajout du listener pour mettre à jour des données du localStorage
+    const boutonMettreAJour = document.querySelector(".btn-maj");
+    boutonMettreAJour.addEventListener("click", function () {
+        window.localStorage.removeItem("pieces");
+    });
