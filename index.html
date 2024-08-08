@@ -14,11 +14,31 @@
 		<main>
 			<!-- Menu de recherche -->
 			<section class="filtres">
-				<h3>Filtres</h3>
+				<h3>Filtres</h3> 
+				<div>
+					<label for="prixMax">Prix maximum</label>
+					<input type="range" id="prixMax" name="prixMax" min="0" max="60" step="5">
+				 </div>
+
+				<button class="btn-trier">Trier par prix croissant</button>
+				<br>
+				<button class="btn-trier-2">Trier par prix décroissant</button>
+				<br>
+				<button class="btn-filtrer">Filtrer les pièces non abordables</button>
+				<br>
+				<button class="btn-filtrer-description">Filtrer les pièces qui possède une description</button>
 			</section>
 
 			<!-- Fiches produits -->
 			<section class="fiches">
+				
+				<!-- Code ajouté -->
+				<div class="abordables">
+					
+				</div>
+				<div class="disponible">
+					
+				</div>
 			</section>
 		</main>
 	</body>

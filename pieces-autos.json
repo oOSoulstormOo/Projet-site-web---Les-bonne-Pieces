@@ -22,7 +22,7 @@
         "nom": "Ampoule boîte à gants",
         "prix": 5.49,
         "categorie": "Optiques",
-        "image": "./images/ampoule-boite-a-gant.png",
+        "image": "./images/ampoule-boite-a-gants.png",
         "description": "Pour y voir clair dans l'habitacle.",
         "disponibilite": false
     },
